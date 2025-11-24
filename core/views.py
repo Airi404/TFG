@@ -4,12 +4,12 @@ from django.contrib.auth import login
 from .forms import CustomUserCreationForm
 from .forms import MascotaForm
 from django.contrib import messages
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForMultipleChoice
 import torch
 import re
 
-tokenizer = AutoTokenizer.from_pretrained("roberta-large-mnli")
-model = AutoModelForSequenceClassification.from_pretrained("roberta-large-mnli")
+tokenizer = AutoTokenizer.from_pretrained("prajjwal1/roberta_hellaswag")
+model = AutoModelForMultipleChoice.from_pretrained("prajjwal1/roberta_hellaswag")
 
 
 def home(request):
@@ -27,37 +27,31 @@ def signup_view(request):
     
     return render(request, "registration/signup.html", {"form": form})
 
-def analizar_texto_huggingface(texto):
-    """
-    Analiza coherencia combinando reglas simples + Roberta-MNLI.
-    Devuelve True si es coherente, False si parece incoherente o absurdo.
-    """
-    # Reglas simples: descartar solo nombres raros o textos vacíos
+def analizar_texto_commonsense(texto):
     if not texto.strip():
         return False, "Descripción vacía."
 
-    # Ignorar nombres demasiado cortos
-    if len(texto.split("\n")[0].split(":")[-1].strip()) < 2:
-        return True, "Contenido permitido."
-
-    # Extraer solo la descripción para MNLI
+    # Extraer descripción
     match = re.search(r"Descripción:\s*(.*)", texto)
     descripcion = match.group(1) if match else texto
 
-    # MNLI solo en la descripción
-    hypothesis = "This is a valid pet description."
-    inputs = tokenizer(descripcion, hypothesis, return_tensors='pt', truncation=True)
+    # Construir opciones
+    opciones = [
+        f"{descripcion} Esto es realista.",
+        f"{descripcion} Esto es absurdo."
+    ]
+
+    # Tokenizar como multiple choice
+    inputs = tokenizer([descripcion, descripcion], opciones, return_tensors="pt", padding=True)
     with torch.no_grad():
         logits = model(**inputs).logits
-    probabilities = torch.softmax(logits, dim=1)
-    labels = ["contradiction", "neutral", "entailment"]
-    pred_label = labels[probabilities.argmax()]
 
-    if pred_label == "entailment":
-        # Si MNLI dice entailment o la descripción es corta y normal, aceptamos
+    pred = torch.argmax(logits, dim=1).item()
+
+    if pred == 0:
         return True, "Contenido coherente."
     else:
-        return False, "Contenido incoherente o sospechoso."
+        return False, "Contenido incoherente o absurdo."
 
 
 def buscaHogar(request):
