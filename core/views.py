@@ -53,7 +53,7 @@ def analizar_texto_huggingface(texto):
     labels = ["contradiction", "neutral", "entailment"]
     pred_label = labels[probabilities.argmax()]
 
-    if pred_label == "entailment" or len(descripcion) < 20:
+    if pred_label == "entailment":
         # Si MNLI dice entailment o la descripción es corta y normal, aceptamos
         return True, "Contenido coherente."
     else:

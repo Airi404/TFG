@@ -13,6 +13,7 @@
                 <strong>Tipo:</strong> {{ mascota.tipo }} <br>
                 <strong>Carácter:</strong> {{ mascota.caracter }} <br>
                 <strong>Descripción:</strong> {{ mascota.descripcion }} <br>
+                <img src="{{ mascota.foto.url }}" alt="Foto de {{ mascota.nombre }}" width="200">
             </li>
             <hr>
         {% endfor %}

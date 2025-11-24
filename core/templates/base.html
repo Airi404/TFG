@@ -18,7 +18,7 @@
             </a>       
             <nav class="hidden md:flex space-x-8 text-lg font-semibold">
                 <a href="{% url 'home' %}" class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">Inicio</a>
-                <a href="{% url lista_mascotas %}" class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">Animales</a>
+                <a href="{% url 'lista_mascotas' %}" class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">Animales</a>
 
                 {% if user.is_authenticated %}
                     <form method="POST" action="{% url 'logout' %}">
