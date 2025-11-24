@@ -133,3 +133,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # carpeta donde collectstatic copiará t
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TAILWIND_APP_NAME = 'patitasFelices'
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
+# Configuración del backend de correo para desarrollo CAMBIAR DESPUÉS
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

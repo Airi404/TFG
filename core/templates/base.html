@@ -18,7 +18,21 @@
             </a>       
             <nav class="hidden md:flex space-x-8 text-lg font-semibold">
                 <a href="{% url 'home' %}" class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">Inicio</a>
-            </nav>  
+
+                {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'signup' %}"  class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">Registrarse</a>
+                    <a href="{% url 'login' %}" class="text-blue-600 transition-all duration-300 hover:text-orange-500 hover:scale-105">Iniciar Sesión</a>
+                {% endif %}
+
+            </nav> 
         </div>
     </header>
 
