@@ -3,6 +3,8 @@ from . import views
 from .views import signup_view
 from django.contrib.auth import views as auth_views
 
+
+
 urlpatterns = [
     path('', views.home, name='home'),
     path("signup/", signup_view, name="signup"),
@@ -21,5 +23,8 @@ urlpatterns = [
 
     path("reset/done/", auth_views.PasswordResetCompleteView.as_view(template_name="registration/reset_complete.html"), 
          name="password_reset_complete"),
+
+     path('buscaHogar/', views.buscaHogar, name='buscaHogar'),
+     path('lista_mascotas/', views.lista_mascotas, name='lista_mascotas'),
 
 ]
