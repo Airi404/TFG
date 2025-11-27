@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'core',
     'users',
     'tailwind',
-    'patitasFelices',
+    'theme',
     ]
 
 MIDDLEWARE = [
@@ -129,7 +129,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # carpeta donde collectstatic copiará t
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-TAILWIND_APP_NAME = 'patitasFelices'
+TAILWIND_APP_NAME = 'theme'
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 # Configuración del backend de correo para desarrollo CAMBIAR DESPUÉS
