@@ -13,31 +13,17 @@ model = AutoModelForMultipleChoice.from_pretrained("prajjwal1/roberta_hellaswag"
 def home(request):
     return render(request, 'core/home.html')
 
-def analizar_texto_commonsense(texto):
-    if not texto.strip():
-        return False, "Descripción vacía."
+from django.http import JsonResponse
+from .services.gemini_service import preguntar_a_gemini
 
-    # Extraer descripción
-    match = re.search(r"Descripción:\s*(.*)", texto)
-    descripcion = match.group(1) if match else texto
+def analizar_texto_commonsense(request):
+    pregunta = request.GET.get("q", "Hola, ¿qué puedes hacer?")
+    respuesta = preguntar_a_gemini(pregunta)
 
-    # Construir opciones
-    opciones = [
-        f"{descripcion} Esto es realista.",
-        f"{descripcion} Esto es absurdo."
-    ]
-
-    # Tokenizar como multiple choice
-    inputs = tokenizer([descripcion, descripcion], opciones, return_tensors="pt", padding=True)
-    with torch.no_grad():
-        logits = model(**inputs).logits
-
-    pred = torch.argmax(logits, dim=1).item()
-
-    if pred == 0:
-        return True, "Contenido coherente."
-    else:
-        return False, "Contenido incoherente o absurdo."
+    return JsonResponse({
+        "pregunta": pregunta,
+        "respuesta": respuesta
+    })
 
 
 def buscaHogar(request):
@@ -54,7 +40,7 @@ def buscaHogar(request):
             )
 
             # Analizar coherencia del texto
-            permitido, mensaje = analizar_texto_huggingface(contenido)
+            permitido, mensaje = analizar_texto_commonsense(contenido)
 
             if not permitido:
                 messages.error(request, mensaje)
@@ -68,6 +54,7 @@ def buscaHogar(request):
         form = MascotaForm()
 
     return render(request, 'core/buscaHogar.html', {'form': form})
+
 from django.shortcuts import render
 from .models import Mascota  # Importa tu modelo
 
